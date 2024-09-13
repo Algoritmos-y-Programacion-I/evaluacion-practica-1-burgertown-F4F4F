@@ -5,128 +5,154 @@ import java.util.Scanner;
 public class BurgerTown {
 
     public static Scanner reader;
-    public static double[] precios;
-    public static int[] unidades;
+    public static double[] prices;
+    public static int[] amounts;
 
     public static void main(String[] args) {
-
-        inicializarGlobales();
-        menu();
+        initializeGlobals();
+        menu(); 
     }
-
+ 
     /**
      * Descripcion: Este metodo se encarga de iniciar las variables globales
      * pre: El Scanner reader debe estar declarado
      * pos: l Scanner reader queda inicializado
     */
-    public static void inicializarGlobales() {
 
+    public static void initializeGlobals() {
         reader = new Scanner(System.in);
-
     }
-
-    /**
+  /**
      * Descripcion: Este metodo se encarga de desplegar el menu al usuario y mostrar los mensajes de resultado para cada funcionalidad
      * pre: El Scanner reader debe estar inicializado
      * pre: El arreglo precios debe estar inicializado
     */
+   
     public static void menu() {
+        System.out.println("BurgerTown");
 
-        System.out.println("Bienvenido a BurgerTown!");
-
-        establecerCantidadVendida();
-
-        boolean salir = false;
+        boolean exit = false;
 
         do {
+            System.out.println("\nMain Menu (please first type 1 to add data):");
+            System.out.println("1. Enter prices and amounts of each dish sold during the day");
+            System.out.println("2. The dishes sold during the day");
+            System.out.println("3. Calculate the average price of dishes sold ");
+            System.out.println("4. Calculate the total sales ");
+            System.out.println("5. Dishes that exceeded limit");
+            System.out.println("6. Exit");
+            System.out.println("\nEnter the option ");
+            int option = reader.nextInt();
 
-            System.out.println("\nMenu Principal:");
-            System.out.println("1. Solicitar precios ($) y cantidades de cada plato vendido en el dia");
-            System.out.println("2. Calcular la cantidad total de platos vendidos en el dia");
-            System.out.println("3. Calcular el precio promedio de los platos vendidos en el dia");
-            System.out.println("4. Calcular las ventas totales (dinero recaudado) durante el dia");
-            System.out.println("5. Consultar el numero de platos que en el dia han superado un limite minimo de ventas");
-            System.out.println("6. Salir");
-            System.out.println("\nDigite la opcion a ejecutar");
-            int opcion = reader.nextInt();
-
-            switch (opcion) {
+            switch (option) {
                 case 1:
-                    solicitarDatos();
+                    putAmountSold();
+                    requestData();
                     break;
                 case 2:
-                    System.out.println("\nLa cantidad total de platos vendidos en el dia fue de: "+calcularTotalPlatosVendidos());
+                    System.out.println("\nThe total number of dishes sold was: " + calculateTotalDishesSold());
                     break;
                 case 3:
-                    System.out.println("\nEl precio promedio de los platos vendidos en el dia fue de: "+calcularPrecioPromedio());
+                    System.out.println("\nThe average price of dishes sold was: " + calculateAveragePrice());
                     break;
                 case 4:
-                    System.out.println("\nLas ventas totales (dinero recaudado) durante el dia fueron: "+calcularVentasTotales());
+                    System.out.println("\nThe total sales for the day were: " + calculateTotalSales());
                     break;
                 case 5:
-                    System.out.println("\nDigite el limite minimo de ventas a analizar");
-                    double limite = reader.nextDouble();
-                    System.out.println("\nDe las "+precios.length+" referencias vendidas en el dia, "+consultarPlatosSobreLimite(limite)+" superaron el limite minimo de ventas de "+limite);
+                    System.out.println("\nEnter the  limit");
+                    double limit = reader.nextDouble();
+                    
+                    System.out.println("\nFrom " + prices.length + " dishes, " + DishesAboveLimit(limit) + " exceeded " + limit);
                     break;
                 case 6:
-                    System.out.println("\nGracias por usar nuestros servicios!");
-                    salir = true;
+                    System.out.println("\nBye thank u");
+                    exit = true;
                     reader.close();
                     break;
-
                 default:
-                    System.out.println("\nOpcion invalida, intenta nuevamente.");
+                    System.out.println("\nnot valid");
                     break;
             }
-
-        } while (!salir);
-
+        } while (!exit);
     }
 
-    /**
+   /**
      * Descripcion: Este metodo se encarga de preguntar al usuario el numero de platos diferentes 
      * vendidos en el dia e inicializa con ese valor los arreglos encargados de almacenar precios y cantidades
      * pre: El Scanner reader debe estar inicializado
      * pre: Los arreglos precios y unidades deben estar declarados
      * pos: Los arreglos precios y unidades quedan inicializados
      */
-    public static void establecerCantidadVendida() {
+    public static void putAmountSold() {
+        
+        System.out.println("\nEnter the different dishes sold:");
+        int dishes = reader.nextInt();
 
-        System.out.println("\nDigite el numero de platos diferentes vendidos en el dia ");
-        int platos = reader.nextInt();
-
-        precios = new double[platos];
-        unidades = new int[platos];
-
+        prices = new double[dishes];
+        amounts = new int[dishes];
     }
 
-    public static void solicitarDatos(){
+   
+    public static void requestData() {
+        for (int i = 0; i < prices.length; i++) {
+            System.out.println("Enter the price of dish " + (i + 1) + ":");
+            prices[i] = reader.nextDouble();
 
-     
+            System.out.println("Enter the amount of dish " + (i + 1) + ":");
+            amounts[i] = reader.nextInt();
+        }
     }
 
-    public static int calcularTotalPlatosVendidos(){
-
-        return 0;
-
+    /**
+     * Calculates the total number of dishes sold.
+     * @return total of dishes sold.
+     */
+    public static int calculateTotalDishesSold() {
+        int total = 0; 
+        for (int amount : amounts) {
+            total += amount;
+        }
+        return total;
     }
 
-    public static double calcularPrecioPromedio(){
-
-        return 0;
-
+    /**
+     * Calculates the average price of the dishes sold.
+     * @return the average price of the dishes sold.
+     */
+    public static double calculateAveragePrice() {
+        double totalSales = 0;
+        int totalAmount = 0;
+        for (int i = 0; i < prices.length; i++) {
+            totalSales += prices[i] * amounts[i];
+            totalAmount += amounts[i];
+        }
+        return totalAmount == 0 ? 0 : totalSales / totalAmount; // ternary operador
     }
 
-    public static double calcularVentasTotales(){
-
-        return 0;
-
+    /**
+     * Calculates the total sales .
+     * @return The total sales
+     */
+    public static double calculateTotalSales() {
+        double totalSales = 0;
+        for (int i = 0; i < prices.length; i++) {
+            totalSales += prices[i] * amounts[i];
+        }
+        return totalSales;
     }
 
-    public static int consultarPlatosSobreLimite(double limite){
-
-        return 0;
-
+    /**
+     * Calculates the dishes that exceeded limit
+     * @param limit The minimum sales limit
+     * @return The number of dishes that exceeded the limit
+     */
+    public static int DishesAboveLimit(double limit) {
+        int count = 0;
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] * amounts[i] > limit) {
+                count++;
+            }
+        }
+        return count;
     }
-
 }
